@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Orto Loseto · Monitor</title>
+<meta name="theme-color" content="#315b3a" />
+<style>
+:root{--bg:#f4f1e7;--card:#fffdf7;--ink:#213128;--muted:#708076;--accent:#315b3a;--accent2:#73956f;--line:#dce3d9;--warn:#b26b32;--ok:#3f7d4d}
+*{box-sizing:border-box} body{margin:0;font-family:ui-rounded,system-ui,-apple-system,BlinkMacSystemFont,"SF Pro Rounded","Segoe UI",sans-serif;background:linear-gradient(180deg,#edf3e9 0,#f8f5ed 240px,#f4f1e7 100%);color:var(--ink)}
+.app{max-width:860px;margin:auto;padding:env(safe-area-inset-top) 14px calc(32px + env(safe-area-inset-bottom))}
+.hero{padding:28px 8px 18px}.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent2);font-weight:800}.hero h1{font-size:34px;line-height:1.05;margin:7px 0}.hero p{margin:0;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.stat{background:rgba(255,255,255,.75);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:18px;padding:14px;min-height:100px}.stat b{display:block;font-size:26px}.stat span{font-size:12px;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:16px;margin-top:14px;box-shadow:0 5px 18px rgba(32,56,39,.04)}
+.card h2{font-size:18px;margin:0 0 12px}.sub{font-size:13px;color:var(--muted);margin-top:-4px;margin-bottom:12px}.crop{padding:14px 0;border-top:1px solid var(--line)}.crop:first-of-type{border-top:0}.crophead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.cropname{font-weight:800}.badge{font-size:11px;padding:4px 8px;border-radius:999px;background:#edf4ea;color:var(--accent);white-space:nowrap}.bar{height:9px;background:#e9eee6;border-radius:999px;overflow:hidden;margin:9px 0 6px}.fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:999px}.row{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--muted)}
+label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin:10px 0 5px}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}input,select,textarea{width:100%;font:inherit;padding:11px 12px;border-radius:13px;border:1px solid var(--line);background:white;color:var(--ink)}textarea{min-height:82px;resize:vertical}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.btn{appearance:none;border:0;border-radius:13px;padding:11px 14px;font-weight:800;background:var(--accent);color:white;cursor:pointer}.btn.secondary{background:#e9efe6;color:var(--accent)}.btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--line)}
+.timeline{display:flex;gap:10px;overflow:auto;padding-bottom:4px}.phase{min-width:165px;padding:12px;border-radius:16px;background:#f3f6f0;border:1px solid var(--line)}.phase.done{opacity:.6}.phase.current{border:2px solid var(--accent);background:#edf4ea}.phase b{font-size:13px}.phase small{display:block;color:var(--muted);margin-top:5px}
+.obs{display:grid;grid-template-columns:72px 1fr;gap:12px;padding:13px 0;border-top:1px solid var(--line)}.obs:first-of-type{border-top:0}.thumb{width:72px;height:72px;border-radius:14px;object-fit:cover;background:#e8ece6}.obs h3{font-size:14px;margin:0 0 4px}.obs p{font-size:13px;color:var(--muted);margin:2px 0}.empty{padding:18px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:16px}.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.gallery img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:14px;border:1px solid var(--line)}
+.footer{font-size:12px;color:var(--muted);text-align:center;padding:22px 6px}.switch{display:flex;gap:8px;flex-wrap:wrap}.pill{padding:8px 10px;border:1px solid var(--line);border-radius:999px;background:white;color:var(--muted);font-size:12px;cursor:pointer}.pill.active{background:var(--accent);color:white;border-color:var(--accent)}
+
+.loginGate{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;padding:24px;background:linear-gradient(160deg,#edf3e9,#f8f5ed)}
+.loginBox{width:min(92vw,380px);background:var(--card);border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:0 18px 50px rgba(32,56,39,.14)}
+.loginBox h2{margin:4px 0 6px;font-size:24px}.loginBox p{margin:0 0 14px;color:var(--muted);font-size:13px}.loginBox .brand{font-size:32px}.loginError{min-height:20px;margin-top:8px;color:#9d3b34;font-size:12px;font-weight:700}.hidden{display:none!important}
+@media(max-width:700px){.grid{grid-template-columns:1fr 1fr}.hero h1{font-size:30px}.two{grid-template-columns:1fr}.gallery{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="loginGate" id="loginGate">
+  <div class="loginBox">
+    <div class="brand">🌱</div>
+    <h2>Orto Loseto</h2>
+    <p>Area condivisa del gruppo dell’orto</p>
+    <label>Utente</label><input id="loginUser" autocomplete="username" autocapitalize="off" placeholder="Utente">
+    <label>Password</label><input id="loginPass" type="password" autocomplete="current-password" placeholder="Password">
+    <div class="actions"><button class="btn" id="loginBtn">Entra</button></div>
+    <div class="loginError" id="loginError"></div>
+  </div>
+</div>
+<div class="app">
+  <section class="hero">
+    <div class="eyebrow">Orto condiviso · Loseto</div>
+    <h1>Diario dell'orto 🌱</h1>
+    <p id="seasonLine">Semina del 4 ottobre 2026 · coltivazione senza irrigazione</p>
+  </section>
+
+  <section class="grid">
+    <div class="stat"><span>Giorni dalla semina</span><b id="daysFrom">–</b><span id="todayLabel"></span></div>
+    <div class="stat"><span>Fase attuale</span><b id="mainStage" style="font-size:18px">–</b><span>stima cime di rapa</span></div>
+    <div class="stat"><span>Raccolto più vicino</span><b id="nextHarvest" style="font-size:18px">–</b><span id="nextHarvestDate"></span></div>
+    <div class="stat"><span>Pioggia registrata</span><b id="rainTotal">0 mm</b><span>dal diario</span></div>
+  </section>
+
+  <section class="card">
+    <h2>Previsione crescita</h2>
+    <div class="sub">Stima agronomica indicativa dalla data di semina. Il meteo reale può anticipare o ritardare le fasi.</div>
+    <div id="cropList"></div>
+  </section>
+
+  <section class="card">
+    <h2>Timeline cime di rapa</h2>
+    <div class="timeline" id="timeline"></div>
+  </section>
+
+  <section class="card">
+    <h2>Aggiungi un aggiornamento</h2>
+    <div class="two">
+      <div><label>Data</label><input type="date" id="obsDate"></div>
+      <div><label>Coltura</label><select id="obsCrop"></select></div>
+    </div>
+    <div class="two">
+      <div><label>Stato</label><select id="obsStatus"><option>Non emersa</option><option>Prime emergenze</option><option>Emergenza diffusa</option><option>In crescita</option><option>Da diradare</option><option>Pronta quasi al raccolto</option><option>Raccolta</option></select></div>
+      <div><label>Pioggia osservata (mm, opzionale)</label><input type="number" step="0.1" min="0" id="obsRain" placeholder="es. 12"></div>
+    </div>
+    <label>Nota</label><textarea id="obsNote" placeholder="Es. prime piantine visibili, terreno ancora umido a 3 cm, zona nord più rada..."></textarea>
+    <label>Foto</label><input type="file" id="obsPhoto" accept="image/*" capture="environment">
+    <div class="actions"><button class="btn" id="saveObs">Salva aggiornamento</button><button class="btn secondary" id="shareNow">Condividi riepilogo</button></div>
+  </section>
+
+  <section class="card">
+    <h2>Diario</h2>
+    <div id="obsList"></div>
+  </section>
+
+  <section class="card">
+    <h2>Galleria</h2>
+    <div id="gallery" class="gallery"></div>
+  </section>
+
+  <section class="card">
+    <h2>Condivisione e backup</h2>
+    <div class="sub">Il file funziona senza account. I dati restano sul dispositivo: per passare lo stato agli altri usa “Esporta progetto” e loro possono usare “Importa progetto”.</div>
+    <div class="actions">
+      <button class="btn secondary" id="exportBtn">Esporta progetto</button>
+      <label class="btn ghost" style="display:inline-block;margin:0">Importa progetto<input id="importFile" type="file" accept="application/json" hidden></label>
+      <button class="btn ghost" id="resetBtn">Azzera dati locali</button>
+    </div>
+  </section>
+
+  <div class="footer">Orto Loseto · monitor semplice per il gruppo · versione 1.1 · accesso gruppo</div>
+</div>
+<script>
+const AUTH_HASH='be54a91ce0d911df7bc97661563809430ebd5ebf318512c3ca7fc7ca5530f255';
+async function sha256(text){const b=new TextEncoder().encode(text);const h=await crypto.subtle.digest('SHA-256',b);return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+async function doLogin(){const u=document.getElementById('loginUser').value.trim();const p=document.getElementById('loginPass').value;const ok=(await sha256(u+':'+p))===AUTH_HASH;if(ok){sessionStorage.setItem('ortoAuth','1');document.getElementById('loginGate').classList.add('hidden');document.getElementById('loginError').textContent=''}else{document.getElementById('loginError').textContent='Credenziali non corrette.'}}
+if(sessionStorage.getItem('ortoAuth')==='1')document.getElementById('loginGate').classList.add('hidden');
+document.getElementById('loginBtn').onclick=doLogin;document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
+const DEFAULT_SOW='2026-10-04';
+const crops=[
+  {name:'Cime di rapa · sessantine', min:50,max:65, sprout:[4,9], icon:'🥬'},
+  {name:'Cime di rapa · novantine', min:75,max:95, sprout:[4,9], icon:'🥬'},
+  {name:'Rucola', min:25,max:40, sprout:[3,7], icon:'🌿'},
+  {name:'Cicoria', min:55,max:90, sprout:[6,12], icon:'🌱'},
+  {name:'Bietola', min:50,max:70, sprout:[5,10], icon:'🍃'},
+  {name:'Spinaci', min:40,max:60, sprout:[6,12], icon:'🌿'}
+];
+const phases=[
+  {name:'Imbibizione',a:0,b:2,txt:'Il seme assorbe acqua'},
+  {name:'Germinazione',a:3,b:6,txt:'La radichetta si attiva'},
+  {name:'Emergenza',a:5,b:10,txt:'Compaiono i cotiledoni'},
+  {name:'2–4 foglie vere',a:10,b:20,txt:'Possibile diradamento'},
+  {name:'Sviluppo vegetativo',a:20,b:40,txt:'Crescita rapida con terreno fresco'},
+  {name:'Formazione cima',a:40,b:55,txt:'Inizia la parte edule'},
+  {name:'Raccolta',a:50,b:95,txt:'Dipende dalla varietà'}
+];
+let data=JSON.parse(localStorage.getItem('ortoLoseto')||'null')||{sowDate:DEFAULT_SOW, observations:[]};
+function save(){localStorage.setItem('ortoLoseto',JSON.stringify(data)); render();}
+function daysBetween(a,b){return Math.floor((new Date(b+'T12:00:00')-new Date(a+'T12:00:00'))/86400000)}
+function fmt(d){return new Date(d+'T12:00:00').toLocaleDateString('it-IT',{day:'numeric',month:'short',year:'numeric'})}
+function addDays(dateStr,n){let d=new Date(dateStr+'T12:00:00');d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)}
+function today(){return new Date().toISOString().slice(0,10)}
+function currentStage(day){let x=phases.find(p=>day>=p.a&&day<=p.b); if(!x) return day<0?'Semina futura':'Sviluppo / raccolta'; return x.name}
+function render(){
+ const d=Math.max(0,daysBetween(data.sowDate,today()));
+ document.getElementById('daysFrom').textContent=d;
+ document.getElementById('todayLabel').textContent=new Date().toLocaleDateString('it-IT',{day:'numeric',month:'short'});
+ document.getElementById('mainStage').textContent=currentStage(d);
+ const first=crops.reduce((a,c)=>c.min<a.min?c:a,crops[0]);
+ document.getElementById('nextHarvest').textContent=first.name.replace('Cime di rapa · ','');
+ document.getElementById('nextHarvestDate').textContent='~ '+fmt(addDays(data.sowDate,first.min));
+ document.getElementById('rainTotal').textContent=(data.observations.reduce((s,o)=>s+(Number(o.rain)||0),0)).toFixed(1)+' mm';
+ document.getElementById('cropList').innerHTML=crops.map(c=>{let pct=Math.max(0,Math.min(100,Math.round(d/c.min*100)));let status=d<c.sprout[0]?'in germinazione':d<=c.sprout[1]?'emergenza attesa':d<c.min?'in crescita':'finestra raccolta';return `<div class="crop"><div class="crophead"><div><div class="cropname">${c.icon} ${c.name}</div><div class="row"><span>Germinazione: ${c.sprout[0]}–${c.sprout[1]} gg</span><span>Raccolta: ${c.min}–${c.max} gg</span></div></div><span class="badge">${status}</span></div><div class="bar"><div class="fill" style="width:${pct}%"></div></div><div class="row"><span>${pct}% verso prima raccolta</span><span>${fmt(addDays(data.sowDate,c.min))} → ${fmt(addDays(data.sowDate,c.max))}</span></div></div>`}).join('');
+ document.getElementById('timeline').innerHTML=phases.map(p=>{let cls=d>p.b?'done':(d>=p.a&&d<=p.b?'current':'');return `<div class="phase ${cls}"><b>${p.name}</b><small>giorni ${p.a}–${p.b}</small><small>${p.txt}</small></div>`}).join('');
+ const obs=[...data.observations].sort((a,b)=>b.date.localeCompare(a.date));
+ document.getElementById('obsList').innerHTML=obs.length?obs.map((o,i)=>`<div class="obs">${o.photo?`<img class="thumb" src="${o.photo}">`:`<div class="thumb" style="display:grid;place-items:center">🌱</div>`}<div><h3>${fmt(o.date)} · ${o.crop}</h3><p><b>${o.status}</b>${o.rain?` · pioggia ${o.rain} mm`:''}</p><p>${o.note||''}</p></div></div>`).join(''):'<div class="empty">Nessun aggiornamento ancora. Aggiungi la prima foto dell\'emergenza.</div>';
+ const photos=obs.filter(o=>o.photo);document.getElementById('gallery').innerHTML=photos.length?photos.map(o=>`<img src="${o.photo}" alt="${o.crop} ${o.date}">`).join(''):'<div class="empty" style="grid-column:1/-1">Le foto compariranno qui.</div>';
+}
+function compressImage(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=e=>{const img=new Image();img.onload=()=>{let w=img.width,h=img.height,max=1200;if(w>max||h>max){let q=Math.min(max/w,max/h);w*=q;h*=q}const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);resolve(c.toDataURL('image/jpeg',.78))};img.onerror=reject;img.src=e.target.result};r.onerror=reject;r.readAsDataURL(file)})}
+async function addObs(){let photo=null;const f=document.getElementById('obsPhoto').files[0];if(f)photo=await compressImage(f);data.observations.push({date:document.getElementById('obsDate').value||today(),crop:document.getElementById('obsCrop').value,status:document.getElementById('obsStatus').value,rain:document.getElementById('obsRain').value,note:document.getElementById('obsNote').value.trim(),photo});document.getElementById('obsNote').value='';document.getElementById('obsRain').value='';document.getElementById('obsPhoto').value='';save();}
+function summary(){const d=Math.max(0,daysBetween(data.sowDate,today()));const last=[...data.observations].sort((a,b)=>b.date.localeCompare(a.date))[0];let s=`🌱 ORTO LOSETO · aggiornamento ${new Date().toLocaleDateString('it-IT')}\nSemina: ${fmt(data.sowDate)} · giorno ${d}\nFase stimata cime di rapa: ${currentStage(d)}\nPrima finestra raccolta sessantine: ${fmt(addDays(data.sowDate,50))}–${fmt(addDays(data.sowDate,65))}`;if(last)s+=`\n\nUltimo rilievo: ${last.crop} — ${last.status}${last.note?`\n${last.note}`:''}${last.rain?`\nPioggia registrata: ${last.rain} mm`:''}`;s+='\n\n📸 Aggiorniamo foto e note nel Diario dell\'orto.';return s}
+async function share(){let text=summary();if(navigator.share){try{await navigator.share({title:'Orto Loseto',text})}catch(e){}}else{await navigator.clipboard.writeText(text);alert('Riepilogo copiato negli appunti. Incollalo su WhatsApp o Telegram.')}}
+function exportData(){const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='orto-loseto-backup-'+today()+'.json';a.click();URL.revokeObjectURL(a.href)}
+function importData(file){const r=new FileReader();r.onload=e=>{try{data=JSON.parse(e.target.result);save();alert('Progetto importato.')}catch(err){alert('File non valido.')}};r.readAsText(file)}
+document.getElementById('obsDate').value=today();document.getElementById('obsCrop').innerHTML=crops.map(c=>`<option>${c.name}</option>`).join('');
+document.getElementById('saveObs').onclick=addObs;document.getElementById('shareNow').onclick=share;document.getElementById('exportBtn').onclick=exportData;document.getElementById('importFile').onchange=e=>e.target.files[0]&&importData(e.target.files[0]);document.getElementById('resetBtn').onclick=()=>{if(confirm('Cancellare tutti i dati locali e le foto?')){data={sowDate:DEFAULT_SOW,observations:[]};save()}};
+render();
+</script>
+</body>
+</html>
